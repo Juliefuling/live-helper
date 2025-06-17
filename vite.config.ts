@@ -4,6 +4,7 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import electron from 'vite-plugin-electron/simple'
 import pkg from './package.json'
+import { viteStaticCopy } from 'vite-plugin-static-copy';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command }) => {
@@ -17,6 +18,12 @@ export default defineConfig(({ command }) => {
     resolve: {
       alias: {
         '@': path.join(__dirname, 'src')
+      },
+    },
+    build: {
+      // 确保原生模块被正确打包
+      rollupOptions: {
+        external: ['agora-electron-sdk'],
       },
     },
     plugins: [
@@ -62,6 +69,14 @@ export default defineConfig(({ command }) => {
         // If you want use Node.js in Renderer process, the `nodeIntegration` needs to be enabled in the Main process.
         // See 👉 https://github.com/electron-vite/vite-plugin-electron-renderer
         renderer: {},
+      }),
+      viteStaticCopy({
+        targets: [
+          {
+            src: 'src/locales/**',
+            dest: 'locales' // 复制到输出目录
+          }
+        ]
       }),
     ],
     server: process.env.VSCODE_DEBUG && (() => {

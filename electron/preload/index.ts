@@ -23,6 +23,19 @@ contextBridge.exposeInMainWorld('ipcRenderer', {
   // ...
 })
 
+contextBridge.exposeInMainWorld('agora', {
+  createClient: () => new (require('agora-electron-sdk').default)(),
+  getScreenSources: () => ipcRenderer.invoke('agora-get-screen-sources'),
+  setupScreenSharing: (sourceId: string) => ipcRenderer.send('agora-setup-screen-sharing', sourceId),
+});
+
+contextBridge.exposeInMainWorld('electronAPI', {
+  getLanguage: () => ipcRenderer.invoke('get-language'),
+  setLanguage: (lng: Language) => ipcRenderer.invoke('set-language', lng),
+  // 主进程翻译函数（可选）
+  translate: (key: string) => ipcRenderer.invoke('translate', key) 
+});
+
 // --------- Preload scripts loading ---------
 function domReady(condition: DocumentReadyState[] = ['complete', 'interactive']) {
   return new Promise(resolve => {

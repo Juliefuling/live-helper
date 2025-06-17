@@ -1,8 +1,35 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import UpdateElectron from '@/components/update'
 import logoVite from './assets/logo-vite.svg'
 import logoElectron from './assets/logo-electron.svg'
 import './App.css'
+import { useTranslation } from 'react-i18next';
+import { initRendererI18n } from './i18n/renderer';
+
+const LanguageSwitcher = () => {
+  const { t, i18n } = useTranslation(['common', 'settings']);
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    initRendererI18n().then(() => setReady(true));
+  }, []);
+
+  const changeLanguage = async (lng: Language) => {
+    await window.electronAPI.setLanguage(lng);
+    await i18n.changeLanguage(lng);
+  };
+
+  if (!ready) return <div>Loading...</div>;
+
+  return (
+    <div>
+      <h1>{t('common:welcome')}</h1>
+      <button onClick={() => changeLanguage('en')}>English</button>
+      <button onClick={() => changeLanguage('zh-CN')}>简体中文</button>
+      <button onClick={() => changeLanguage('zh-TW')}>繁體中文</button>
+    </div>
+  );
+};
 
 function App() {
   const [count, setCount] = useState(0)
@@ -15,6 +42,7 @@ function App() {
         </a>
       </div>
       <h1>Electron + Vite + React  1111</h1>
+      <LanguageSwitcher />
       <div className='card'>
         <button onClick={() => setCount((count) => count + 1)}>
           count is {count}

@@ -3,11 +3,20 @@ import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 import os from 'node:os'
-import Backend from 'i18next-fs-backend';
+import { IRtcEngineEx, createAgoraRtcEngine } from 'agora-electron-sdk';
 import { update } from './update'
+import { initMainI18n } from '../../src/i18n/config';
+import Store from 'electron-store';
 
 const require = createRequire(import.meta.url)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
+const store = new Store<Schema>({
+  defaults: {
+    language: 'en'
+  }
+});
+// 初始化 Agora SDK
+const agoraEngine: IRtcEngineEx = createAgoraRtcEngine();
 
 // The built directory structure
 //
@@ -45,11 +54,14 @@ const preload = path.join(__dirname, '../preload/index.mjs')
 const indexHtml = path.join(RENDERER_DIST, 'index.html')
 
 async function createWindow() {
+  await initMainI18n(); // 初始化主进程 i18n
   win = new BrowserWindow({
     title: 'Main window',
     icon: path.join(process.env.VITE_PUBLIC, 'favicon.ico'),
     webPreferences: {
       preload,
+      contextIsolation: true, // 必须开启
+      nodeIntegration: false, // 必须关闭
       // Warning: Enable nodeIntegration and disable contextIsolation is not secure in production
       // nodeIntegration: true,
 
@@ -122,3 +134,18 @@ ipcMain.handle('open-win', (_, arg) => {
     childWindow.loadFile(indexHtml, { hash: arg })
   }
 })
+
+// 处理屏幕共享请求
+ipcMain.handle('agora-get-screen-sources', async () => {
+
+});
+
+ipcMain.on('agora-setup-screen-sharing', (_, sourceId) => {
+
+});
+
+// 监听语言切换事件
+ipcMain.handle('get-language', () => store.get('language') || 'en');
+ipcMain.handle('set-language', (_, language: Language) => {
+  store.set('language', language);
+});
