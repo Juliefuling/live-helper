@@ -5,8 +5,9 @@ interface Window {
       setupScreenSharing: (sourceId: string) => void;
     };
     electronAPI: {
-        getLanguage: () => Language;
-        setLanguage: (lng: Language) => void;
+        getLanguage: () => Promise<Language>;
+        changeLanguage: (lng: Language) => Promise<any>;
+        onLanguageChanged:(callback: (_:any, lng: string) => void) => void;
     };
 }
 

@@ -5,16 +5,11 @@ import path from 'node:path'
 import os from 'node:os'
 import { IRtcEngineEx, createAgoraRtcEngine } from 'agora-electron-sdk';
 import { update } from './update'
-import { initMainI18n } from '../../src/i18n/config';
-import Store from 'electron-store';
+import i18n from './i18n';
 
 const require = createRequire(import.meta.url)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const store = new Store<Schema>({
-  defaults: {
-    language: 'en'
-  }
-});
+
 // 初始化 Agora SDK
 const agoraEngine: IRtcEngineEx = createAgoraRtcEngine();
 
@@ -54,7 +49,6 @@ const preload = path.join(__dirname, '../preload/index.mjs')
 const indexHtml = path.join(RENDERER_DIST, 'index.html')
 
 async function createWindow() {
-  await initMainI18n(); // 初始化主进程 i18n
   win = new BrowserWindow({
     title: 'Main window',
     icon: path.join(process.env.VITE_PUBLIC, 'favicon.ico'),
@@ -144,8 +138,11 @@ ipcMain.on('agora-setup-screen-sharing', (_, sourceId) => {
 
 });
 
-// 监听语言切换事件
-ipcMain.handle('get-language', () => store.get('language') || 'en');
-ipcMain.handle('set-language', (_, language: Language) => {
-  store.set('language', language);
+// 获取当前语言
+ipcMain.handle('get-language', () => i18n.language);
+
+// 切换语言（主进程更新后通知渲染进程）
+ipcMain.handle('change-language', async (_, lng: string) => {
+  await i18n.changeLanguage(lng); // 主进程切换语言
+  return i18n.language; // 返回新语言
 });

@@ -31,9 +31,9 @@ contextBridge.exposeInMainWorld('agora', {
 
 contextBridge.exposeInMainWorld('electronAPI', {
   getLanguage: () => ipcRenderer.invoke('get-language'),
-  setLanguage: (lng: Language) => ipcRenderer.invoke('set-language', lng),
-  // 主进程翻译函数（可选）
-  translate: (key: string) => ipcRenderer.invoke('translate', key) 
+  changeLanguage: (lng: string) => ipcRenderer.invoke('change-language', lng),
+  onLanguageChanged: (callback: (lng: string) => void) =>
+    ipcRenderer.on('language-changed', (_, lng) => callback(lng)),
 });
 
 // --------- Preload scripts loading ---------

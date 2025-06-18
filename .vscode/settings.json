@@ -13,5 +13,6 @@
   "i18n-ally.localesPaths": [
     "src/locales",
     "release/2.2.0/win-unpacked/locales"
-  ]
+  ],
+  "i18n-ally.keystyle": "nested"
 }
