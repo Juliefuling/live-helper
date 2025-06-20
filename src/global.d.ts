@@ -11,4 +11,4 @@ interface Window {
     };
 }
 
-type Language = 'en' | 'zh-CN' | 'zh-TW';
+type Language = 'en' | 'zh-CN' | 'zh';

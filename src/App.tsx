@@ -30,7 +30,7 @@ const LanguageSwitcher = () => {
       <h1>{t('welcome')}</h1>
       <button onClick={() => changeLanguage('en')}>English</button>
       <button onClick={() => changeLanguage('zh-CN')}>简体中文</button>
-      <button onClick={() => changeLanguage('zh-TW')}>繁體中文</button>
+      <button onClick={() => changeLanguage('zh')}>繁體中文</button>
     </div>
   );
 };
