@@ -29,11 +29,10 @@ contextBridge.exposeInMainWorld('agora', {
   setupScreenSharing: (sourceId: string) => ipcRenderer.send('agora-setup-screen-sharing', sourceId),
 });
 
-contextBridge.exposeInMainWorld('electronAPI', {
+contextBridge.exposeInMainWorld('electronApi', {
   getLanguage: () => ipcRenderer.invoke('get-language'),
   changeLanguage: (lng: string) => ipcRenderer.invoke('change-language', lng),
-  onLanguageChanged: (callback: (lng: string) => void) =>
-    ipcRenderer.on('language-changed', (_, lng) => callback(lng)),
+  onLanguageChanged: (callback: (lng: string) => void) => ipcRenderer.on('language-changed', (_, lng) => callback(lng)),
 });
 
 // --------- Preload scripts loading ---------

@@ -7,6 +7,8 @@ import Backend from 'i18next-fs-backend'; // 文件系统加载翻译文件
 i18next.use(Backend).init({
   lng: 'en', // 默认语言
   fallbackLng: 'en',
+  ns: ['common', 'settings'],
+  defaultNS: 'common',
   backend: {
     loadPath: path.join(app.getAppPath(), 'public/locales/{{lng}}/{{ns}}.json'),
   },

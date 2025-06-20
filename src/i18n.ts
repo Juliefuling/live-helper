@@ -9,10 +9,16 @@ i18next
   .init({
     lng: 'en', // 默认语言（后续由主进程同步）
     fallbackLng: 'en',
+    ns: ['common', 'settings'],
+    defaultNS: 'common',
     backend: {
-      loadPath: '/locales/{{lng}}/{{ns}}.json', // 从 public/locales 加载
+      loadPath: '../../locales/{{lng}}/{{ns}}.json', // 从 public/locales 加载
     },
     interpolation: { escapeValue: false },
+    detection: {
+        order: ['querystring', 'localStorage', 'navigator'],
+        caches: ['localStorage']
+    }
   });
 
 export default i18next;

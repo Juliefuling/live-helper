@@ -4,7 +4,7 @@ interface Window {
       getScreenSources: () => Promise<any>;
       setupScreenSharing: (sourceId: string) => void;
     };
-    electronAPI: {
+    electronApi: {
         getLanguage: () => Promise<Language>;
         changeLanguage: (lng: Language) => Promise<any>;
         onLanguageChanged:(callback: (_:any, lng: string) => void) => void;
@@ -12,7 +12,3 @@ interface Window {
 }
 
 type Language = 'en' | 'zh-CN' | 'zh-TW';
-
-interface Schema {
-    language: string;
-}

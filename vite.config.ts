@@ -73,8 +73,8 @@ export default defineConfig(({ command }) => {
       viteStaticCopy({
         targets: [
           {
-            src: 'src/locales/**',
-            dest: 'locales' // 复制到输出目录
+            src: 'public/locales/**',
+            dest: 'resources/locales' // 复制到输出目录
           }
         ]
       }),
