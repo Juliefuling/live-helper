@@ -57,7 +57,7 @@
     "vite-plugin-electron-renderer": "^0.14.6",
     "vite-plugin-resolve": "^2.5.2",
     "vite-plugin-static-copy": "^3.0.0",
-    "vitest": "^2.1.5"
+    "vitest": "^3.2.4"
   },
   "agora_electron": {
     "prebuilt": true,
