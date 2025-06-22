@@ -23,13 +23,7 @@ contextBridge.exposeInMainWorld('ipcRenderer', {
   // ...
 })
 
-contextBridge.exposeInMainWorld('agora', {
-  createClient: () => new (require('agora-electron-sdk').default)(),
-  getScreenSources: () => ipcRenderer.invoke('agora-get-screen-sources'),
-  setupScreenSharing: (sourceId: string) => ipcRenderer.send('agora-setup-screen-sharing', sourceId),
-});
-
-contextBridge.exposeInMainWorld('electronApi', {
+contextBridge.exposeInMainWorld('electron', {
   getLanguage: () => ipcRenderer.invoke('get-language'),
   changeLanguage: (lng: string) => ipcRenderer.invoke('change-language', lng),
   onLanguageChanged: (callback: (lng: string) => void) => ipcRenderer.on('language-changed', (_, lng) => callback(lng)),

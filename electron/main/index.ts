@@ -11,7 +11,8 @@ const require = createRequire(import.meta.url)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 // 初始化 Agora SDK
-const agoraEngine: IRtcEngineEx = createAgoraRtcEngine();
+const rtcEngine: IRtcEngineEx = createAgoraRtcEngine();
+console.log('Agora SDK Version:', rtcEngine.getVersion());
 
 // The built directory structure
 //
@@ -50,7 +51,14 @@ const indexHtml = path.join(RENDERER_DIST, 'index.html')
 
 async function createWindow() {
   win = new BrowserWindow({
-    title: 'Main window',
+    title: '直播助手',
+    backgroundColor: '#222222',
+    titleBarStyle: 'hidden',
+    darkTheme: true,
+    titleBarOverlay: {
+      color: '#222222',
+      symbolColor: '#ffffff',
+    },
     icon: path.join(process.env.VITE_PUBLIC, 'favicon.ico'),
     webPreferences: {
       preload,

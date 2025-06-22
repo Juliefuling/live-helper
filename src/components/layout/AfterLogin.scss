@@ -1,0 +1,11 @@
+.app-header {
+    --webkit-app-region: drag;
+    app-region: drag;
+    height: var(--app-height);
+    padding-left: var(--padding);
+    display: flex;
+    align-items: center;
+}
+.main-content {
+    flex: 1;
+}

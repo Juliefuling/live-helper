@@ -70,14 +70,6 @@ export default defineConfig(({ command }) => {
         // See 👉 https://github.com/electron-vite/vite-plugin-electron-renderer
         renderer: {},
       }),
-      viteStaticCopy({
-        targets: [
-          {
-            src: 'public/locales/**',
-            dest: 'resources/locales' // 复制到输出目录
-          }
-        ]
-      }),
     ],
     server: process.env.VSCODE_DEBUG && (() => {
       const url = new URL(pkg.debug.env.VITE_DEV_SERVER_URL)
