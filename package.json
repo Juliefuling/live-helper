@@ -40,6 +40,7 @@
     "tailwindcss": "^3.4.15"
   },
   "devDependencies": {
+    "@electron/remote": "^2.1.2",
     "@playwright/test": "^1.48.2",
     "@types/loadable__component": "^5.13.9",
     "@types/react": "^18.3.12",
@@ -54,7 +55,12 @@
     "vite": "^5.4.11",
     "vite-plugin-electron": "^0.29.0",
     "vite-plugin-electron-renderer": "^0.14.6",
+    "vite-plugin-resolve": "^2.5.2",
     "vite-plugin-static-copy": "^3.0.0",
     "vitest": "^2.1.5"
+  },
+  "agora_electron": {
+    "prebuilt": true,
+    "arch": "x64"
   }
 }

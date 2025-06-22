@@ -4,7 +4,7 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import electron from 'vite-plugin-electron/simple'
 import pkg from './package.json'
-import { viteStaticCopy } from 'vite-plugin-static-copy';
+import { ConfigResolvePlugin } from './agora-plugin'
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command }) => {
@@ -17,14 +17,36 @@ export default defineConfig(({ command }) => {
   return {
     resolve: {
       alias: {
-        '@': path.join(__dirname, 'src')
+        '@': path.join(__dirname, 'src'),
+        'agora-electron-sdk': 'agora-electron-sdk/js/AgoraSdk.js',
       },
     },
+    // optimizeDeps: {
+    //   include: [
+    //     'agora-electron-sdk' // 显式包含 SDK 进行依赖优化
+    //   ],
+    //   esbuildOptions: {
+    //     // 添加 CommonJS 支持
+    //     mainFields: ['module', 'jsnext:main', 'jsnext', 'main']
+    //   }
+    // },
+    // build: {
+    //   commonjsOptions: {
+    //     transformMixedEsModules: true, // 转换混合模块
+    //     include: [/node_modules\/agora-electron-sdk/] // 包含特定模块
+    //   },
+    //   rollupOptions: {
+    //     external: ['agora-electron-sdk'],
+    //   }
+    // },
     build: {
       // 确保原生模块被正确打包
       rollupOptions: {
         external: ['agora-electron-sdk'],
-      },
+      }
+    },
+    optimizeDeps: {
+      exclude: ['agora-electron-sdk', 'electron'], // 禁止 Vite 处理原生模块
     },
     plugins: [
       react(),
@@ -70,6 +92,7 @@ export default defineConfig(({ command }) => {
         // See 👉 https://github.com/electron-vite/vite-plugin-electron-renderer
         renderer: {},
       }),
+      // ConfigResolvePlugin(),
     ],
     server: process.env.VSCODE_DEBUG && (() => {
       const url = new URL(pkg.debug.env.VITE_DEV_SERVER_URL)

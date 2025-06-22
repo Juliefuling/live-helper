@@ -3,16 +3,12 @@ import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
 import os from 'node:os'
-import { IRtcEngineEx, createAgoraRtcEngine } from 'agora-electron-sdk';
+import { ChannelMediaOptions, IRtcEngineEx, createAgoraRtcEngine } from 'agora-electron-sdk';
 import { update } from './update'
 import i18n from './i18n';
 
 const require = createRequire(import.meta.url)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
-
-// 初始化 Agora SDK
-const rtcEngine: IRtcEngineEx = createAgoraRtcEngine();
-console.log('Agora SDK Version:', rtcEngine.getVersion());
 
 // The built directory structure
 //
@@ -46,6 +42,7 @@ if (!app.requestSingleInstanceLock()) {
 }
 
 let win: BrowserWindow | null = null
+let agoraEngine: IRtcEngineEx = createAgoraRtcEngine();
 const preload = path.join(__dirname, '../preload/index.mjs')
 const indexHtml = path.join(RENDERER_DIST, 'index.html')
 
@@ -137,15 +134,6 @@ ipcMain.handle('open-win', (_, arg) => {
   }
 })
 
-// 处理屏幕共享请求
-ipcMain.handle('agora-get-screen-sources', async () => {
-
-});
-
-ipcMain.on('agora-setup-screen-sharing', (_, sourceId) => {
-
-});
-
 // 获取当前语言
 ipcMain.handle('get-language', () => i18n.language);
 
@@ -154,3 +142,57 @@ ipcMain.handle('change-language', async (_, lng: string) => {
   await i18n.changeLanguage(lng); // 主进程切换语言
   return i18n.language; // 返回新语言
 });
+
+// 添加 IPC 监听
+ipcMain.handle('agora-require', () => {
+  return require;
+});
+// 代理方法调用
+ipcMain.handle('agora-call', (_, { method, args }) => {
+  if (!agoraEngine) throw new Error('Agora engine not initialized');
+  return agoraEngine[method](...args);
+});
+ipcMain.handle('agora-instance', () => {
+  if (!agoraEngine) {
+    agoraEngine = createAgoraRtcEngine();
+  }
+  return agoraEngine;
+});
+
+ipcMain.handle('agora-version', () => {
+  return agoraEngine.getVersion();
+});
+
+ipcMain.handle('agora-init', (_, appId: string) => {
+  // return agoraEngine.initialize;
+  // try { 
+  //   // 这里可以初始化 Agora SDK
+  //   agoraEngine.initialize({
+  //     appId,
+  //     logConfig: { filePath: 'agora.log' },
+  //     // 设置 SDK 运行模式为 Live
+  //     // 默认为 Communication
+  //     // Communication：通信模式
+  //     // Live：直播模式
+  //     // 直播模式下，可以开启视频画面的镜像
+  //     // 默认为 Communication
+  //     // mode: RtcConnectionType.RtcConnectionTypeLive,
+  //   });
+  // } catch (e) {
+  //   console.error('initialize', e);
+  // }
+  // return {
+  //   getVersion: () => {
+  //     try {
+  //       return agoraEngine?.getVersion();
+  //     } catch (e) {
+  //       console.error('Get version error:', e);
+  //       return 'Error getting version';
+  //     }
+  //   },
+  //   // 暴露其他常用方法
+  //   joinChannel: (channel: string, token: string, uid: number, options: ChannelMediaOptions = {}) => {
+  //     return agoraEngine?.joinChannel(token, channel, uid, options);
+  //   }
+  // };
+})

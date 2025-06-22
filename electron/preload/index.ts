@@ -1,4 +1,5 @@
 import { ipcRenderer, contextBridge } from 'electron'
+import { IRtcEngineEx, createAgoraRtcEngine } from 'agora-electron-sdk';
 
 // --------- Expose some API to the Renderer process ---------
 contextBridge.exposeInMainWorld('ipcRenderer', {
@@ -27,6 +28,16 @@ contextBridge.exposeInMainWorld('electron', {
   getLanguage: () => ipcRenderer.invoke('get-language'),
   changeLanguage: (lng: string) => ipcRenderer.invoke('change-language', lng),
   onLanguageChanged: (callback: (lng: string) => void) => ipcRenderer.on('language-changed', (_, lng) => callback(lng)),
+});
+
+contextBridge.exposeInMainWorld('agora', {
+  call: async (method: string, ...args: any[]) => {
+    return ipcRenderer.invoke('agora-call', { method, args });
+  },
+  require: () => ipcRenderer.invoke('agora-require'),
+  instance: () => ipcRenderer.invoke('agora-instance'),
+  getVersion: () => ipcRenderer.invoke('agora-version'),
+  initializeAgora: (appId: string) => ipcRenderer.invoke('agora-init', appId),
 });
 
 // --------- Preload scripts loading ---------
