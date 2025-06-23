@@ -4,7 +4,6 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import electron from 'vite-plugin-electron/simple'
 import pkg from './package.json'
-import { viteStaticCopy } from 'vite-plugin-static-copy';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command }) => {
@@ -25,6 +24,9 @@ export default defineConfig(({ command }) => {
       rollupOptions: {
         external: ['agora-electron-sdk'],
       },
+    },
+    optimizeDeps: {
+      exclude: ['agora-electron-sdk'],
     },
     plugins: [
       react(),
